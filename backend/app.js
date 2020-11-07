@@ -8,7 +8,10 @@ const mongoose = require('mongoose');
 
 const session = require('express-session');
 const passport = require("passport");
-const passportLocalMongoose = require("passport-local-mongoose");
+
+// OAUTH
+const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const GitHubStrategy = require( 'passport-github2' ).Strategy;
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -37,14 +40,22 @@ mongoose.set("useCreateIndex", true);
 const User = require("./models/profileModel");
 passport.use(User.createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 /*Routes Config*/
 
 const indexRoute = require("./routes/index");
 const loginRoute = require("./routes/login");
 const registerRoute = require("./routes/register");
+const googleAuth = require("./routes/googleAuth");
 const { Schema } = require("mongoose");
 
 /*-----Routes Config End------*/
@@ -55,6 +66,7 @@ const { Schema } = require("mongoose");
 app.use("/",indexRoute);
 app.use("/login",loginRoute);
 app.use("/register",registerRoute);
+app.use("/auth/google", googleAuth);
 
 /*------App Config End--------*/
 

@@ -56,6 +56,7 @@ const indexRoute = require("./routes/index");
 const loginRoute = require("./routes/login");
 const registerRoute = require("./routes/register");
 const googleAuth = require("./routes/googleAuth");
+const githubAuth = require("./routes/githubAuth");
 const { Schema } = require("mongoose");
 
 /*-----Routes Config End------*/
@@ -67,6 +68,7 @@ app.use("/",indexRoute);
 app.use("/login",loginRoute);
 app.use("/register",registerRoute);
 app.use("/auth/google", googleAuth);
+app.use("/auth/github", githubAuth);
 
 /*------App Config End--------*/
 
